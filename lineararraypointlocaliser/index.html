@@ -1,0 +1,247 @@
+<!doctype html>
+<!-- The DOCTYPE declaration above will set the     -->
+<!-- browser's rendering engine into                -->
+<!-- "Standards Mode". Replacing this declaration   -->
+<!-- with a "Quirks Mode" doctype is not supported. -->
+
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<!--                                                               -->
+<!-- Consider inlining CSS to reduce the number of requested files -->
+<!--                                                               -->
+
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+
+<link type="text/css" rel="stylesheet" href="css/style.css">
+<link type="text/css" rel="stylesheet"
+	href="http://nd2.godesign.ch/css/nativedroid2.css">
+
+<script src="js/jquery/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="js/jquery/jquery.mobile-1.4.5.min.js"
+	type="text/javascript"></script>
+
+<script type="text/javascript" src="js/gpc/gpc.js"></script>
+<script type="text/javascript" src="js/gpc/init.js"></script>
+
+
+<title>LCAV/EPFL Linear-Array Point Localisation Demo</title>
+
+<meta charset="utf-8">
+
+
+<!--                                           -->
+<!-- This script loads your compiled module.   -->
+<!-- If you add any GWT meta tags, they must   -->
+<!-- be added before this line.                -->
+<!--                                           -->
+<script type="text/javascript" language="javascript"
+	src="linsharpdemo/linsharpdemo.nocache.js"></script>
+<script type="text/x-mathjax-config">
+  		MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+	</script>
+<script type="text/javascript" async
+	src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+	</script>
+
+</head> 
+
+<!--                                           -->
+<!-- The body can have arbitrary html, or      -->
+<!-- you can leave the body empty if you want  -->
+<!-- to create a completely dynamic UI.        -->
+<!--                                           -->
+<body>
+	<div data-role="page" id="pageone">
+
+
+
+		<div align="center" data-role="header">Point Localisation Demo on a Linear Camera-Array</div>
+
+		<!-- OPTIONAL: include this if you want history support -->
+		<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
+			style="position: absolute; width: 0; height: 0; border: 0"></iframe>
+
+		<!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+		<noscript>
+			<div
+				style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+				Your web browser must have JavaScript enabled in order for this
+				application to display correctly.</div>
+		</noscript>
+
+
+		<div data-role="main" class="ui-content" id="mainpage">
+
+			<div data-role="collapsible" data-inset="false" id='algoDescription'
+				data-collapsed='false'>
+				<h3 align='center'>Algorithm Description</h3>
+					<p>We propose an algorithm for point localisation or triangulation using multi-camera systems consisting of cameras with a finite number of pixels arranged in a linear array, under the assumption of known camera poses and error-free feature matching. 
+					</p>
+					<p>The proposed algorithm, called SHARP, has the desirable of property of quadratic decay rate with respect to the number of cameras, which we have proven in our work to be the fastest possible error decay rate.
+					</p>
+					<p>
+					We compare our SHARP, with the state-of-the-art approaches of minimising the $\ell_2$,$\ell_\infty$, and $\ell_1$ norm of the reprojection error, all implemented in this demonstration.
+					</p>
+					<p>
+					In order to know more about the SHARP algorithm and triangulation,
+					you can read our
+					submitted <a href="http://infoscience.epfl.ch/record/213712">journal
+						work</a>. You can also see <a
+						href="http://infoscience.epfl.ch/record/207970?ln=en">our
+						earlier work</a> on the analysis of point triangulation for a circular camera setup.
+				</p>
+				<p>
+					If you have any further questions, feel free to contact <a
+						href="http://aghasemi.github.io/#">Alireza Ghasemi</a> via
+					<emph>alireza dot ghasemi at epfl dot ch</emph>
+					.
+				</p>
+					
+			</div>
+
+			<div data-role="collapsible" data-inset="false" id='demoDescription'
+				data-collapsed='false'>
+				<h3 align='center'>Usage Guide</h3>
+				<p>In this demo, we try different methods (including SHARP) to
+					find the location of a point source in a room, based on its image on a set of cameras and the location of those cameras,
+					.As more and more cameras are added to the system, we can compute the point
+					location with increasingly less error. You see the room and the
+					cameras from the top view (in the canvas below) for the sake of
+					better user experience.</p>
+				<p>To start a simulation, you can click on different 
+					parts of the room to see how different algorithm reconstruct a point on the given location. You can change intrinsic parameters of the cameras as well as 
+					the number of cameras
+					in the array using the provided sliders.</p>
+				<p>The consistency region is a subspace of the room which, based
+					on the given point and its images in the cameras, is 100% certain
+					to contain the true location of the point. At each step in
+					simulation, the consistency region is distinguished by a
+					dark violet colour in the canvas.</p>
+				
+			</div>
+			
+
+			<div data-role="collapsible" data-inset="false"
+				data-collapsed='false' id='camParams'>
+				<h3 align='center'>Simulation Parameters</h3>
+				<div class="ui-grid-a" name="radios">
+					<div class="ui-block-a">
+						<label  align="center">
+							Camera Resolution (No. of pixels)
+							<input type="range" name="numpix" id="numpix" value="3" min="1" max="32" align="center">
+						</label>  
+					</div>
+					
+					<div class="ui-block-b">
+						<label  align="center">
+							Field of View (Degrees)
+							<input type="range" name="fov" id="fov" value="53" min="10" max="90" align="center">
+						</label> 
+					</div>
+				</div>
+				
+				<div class="ui-grid-a" name="radios">
+					<div class="ui-block-a">
+						<label  align="center">
+							Number of Cameras
+							<input type="range" name="numcams" id="numcams" value="3" min="2" max="32" align="center">
+						</label>  
+					</div>
+					
+					<div class="ui-block-b">
+						<label  align="center">
+							Baseline
+							<input type="range" name="baseline" id="baseline" value="53" min="10" max="500" align="center">
+						</label> 
+					</div>
+				</div>
+				
+				<!--  <div class="ui-grid-a" name="radios">
+				<div class="ui-block-a">
+				
+					<fieldset data-role="controlgroup" data-type="horizontal" align="center">
+	
+						<label> Addition Mode <input type="radio"
+							name="addremove" value="add" checked="checked" />
+						</label> 
+						<label> Removal Mode <input type="radio"
+							name="addremove" value="rem" />
+						</label>
+					</fieldset>
+				</div>
+				<div class="ui-block-b">-->
+				<!-- 
+					<fieldset data-role="controlgroup" data-type="horizontal" align="center">
+	
+						<label> Camera Selection
+							<input type="radio" name="camerapoint" value="camera" id="camera" checked="checked" />
+						</label>
+						<label> Point Selection 
+							<input type="radio" name="camerapoint" value="point" id="point"/>
+						</label>
+					</fieldset> -->
+				<!--  </div>
+				</div>-->
+				
+				
+			</div>
+
+			<div data-role="collapsible" data-inset="false"
+				data-collapsed='false' id='algoResults'>
+				<h3 align='center'>Results</h3>
+				<div class="ui-grid-d" name="results">
+					<div class="ui-block-a">
+						<label for="name">True point location</label> <input type="text"
+							id="trueCamPos" value="" readonly data-clear-btn="true"
+							placeholder="Camera location not selected yet" />
+					</div>
+
+
+					<div class="ui-block-b">
+						<label for="name">Min. $\ell_2$ norm (<b
+							style="color: red;"> $\blacksquare$ red</b>)
+						</label> <input type="text" id="minL2Norm" value="" readonly
+							data-clear-btn="true" placeholder="No input points chosen" />
+					</div>
+
+					<div class="ui-block-c">
+						<label for="name">Min. $\ell_1$ norm (<b
+							style="color: blue;"> $\blacklozenge$ blue</b>)
+						</label> <input type="text" id="minL1Norm" value="" readonly
+							data-clear-btn="true" placeholder="No input points chosen" />
+					</div>
+
+					<div class="ui-block-d">
+						<label for="name">Min. $\ell_\infty$ norm (<b
+							style="color: black;"> $\blacktriangledown$ black</b>)
+						</label> <input type="text" id="minLinfNorm" value="" readonly
+							data-clear-btn="true" placeholder="No input points chosen" />
+					</div>
+
+					<div class="ui-block-e">
+						<label for="name">Proposed approach (SHARP - <b
+							style="color: green;"> $\bullet$ green</b>)
+						</label> <input type="text" id="shapeResult" value="" readonly
+							data-clear-btn="true" placeholder="No input points chosen" />
+					</div>
+
+				</div>
+				 
+				<div align="center" id="canvasContainer"></div>
+				<label align="center" id="status" style="color: #0000FF"></label>
+				<button id="resetButton" align="center">Reset</button>
+			</div>
+
+
+		</div>
+
+
+
+		<div align="center" data-role="header">AudioVisual
+			Communications Laboratory - EPFL</div>
+
+	</div>
+</body>
+</html>
